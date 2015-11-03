@@ -1,11 +1,5 @@
 class HangpersonGame
 
-  # add the necessary class methods, attributes, etc. here
-  # to make the tests in spec/hangperson_game_spec.rb pass.
-
-  # Get a word from remote "random word" service
-  
-
   attr_accessor :word, :guesses, :wrong_guesses, :hidden_word, :temp_word, :status
 
   def initialize(word)
@@ -61,6 +55,7 @@ class HangpersonGame
     else
       @status = :play
     end
+    return @status
   end
 
 

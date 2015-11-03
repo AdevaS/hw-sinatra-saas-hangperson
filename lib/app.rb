@@ -9,10 +9,16 @@ class HangpersonApp < Sinatra::Base
 
   before do
     @game = session[:game] || HangpersonGame.new('')
+    @game.guesses = session[:guesses]
+    @game.wrong_guesses = session[:wrong_guesses]
+    @game.word = session[:word]
   end
 
   after do
     session[:game] = @game
+    session[:guesses] = @game.guesses
+    session[:wrong_guesses] = @game.wrong_guesses
+    session[:word] = @game.word
   end
 
   get '/' do
@@ -30,6 +36,7 @@ class HangpersonApp < Sinatra::Base
 
     # Your additional code goes here:
     @game = HangpersonGame.new(word)
+
     redirect '/show'
   end
 
@@ -39,20 +46,35 @@ class HangpersonApp < Sinatra::Base
   post '/guess' do
     # get the guessed letter from params[:guess] (note: if user left it blank,
     #   params[:guess] will be nil)
+    letter = params[:guess].to_s[0]
 
     # Try guessing the letter.  If it has already been guessed,
     #   display "You have already used that letter."
+    if @guesses.include?(letter)
+      flash[:notice] = "You have already used that letter."
+    else
+      @game.guess(letter)
+    end
 
     # Either way, the user should then be shown the main game screen ('show' action).
-
+    redirect '/show'
   end
 
   get '/show' do
+
+    @game.check_win_or_lose
+    if @status = :win
+      redirect '/win'
+    elsif @status = :lose
+      redirect '/lose'
+    else
+      redirect '/show'
+    end
     # To show the game status, use the check_win_or_lose function.
     # If player wins (word completed), do the 'win' action instead.
     # If player loses (all guesses used), do the 'lose' action instead.
     # Otherwise, show the contents of the 'show.erb' (main game view) template.
-
+    erb :show
   end
 
   get '/win' do
@@ -60,7 +82,11 @@ class HangpersonApp < Sinatra::Base
     #  If player tries to cheat, they should be shown the main game view instead.  (And
     #  you can optionally supply a "No cheating!" messaage.)
     # If they really did win, show the 'win' view template.
-
+    if @game.check_win_or_lose == :win
+      erb :win
+    else
+      redirect '/show'
+    end
   end
 
   get '/lose' do

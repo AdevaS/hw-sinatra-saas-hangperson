@@ -7,6 +7,11 @@
 <% end %>
 
 <p>
+  Word:
+  <span class="guesses"><%= @game.word %></span>
+</p>
+
+<p>
   Wrong Guesses:
   <span class="guesses"><%= @game.wrong_guesses %></span>
 </p>
@@ -17,7 +22,7 @@
 </p>
 
 <form action="/guess" method="post">
-  <input type="text" size="1" name="guess" autocomplete="off"/>
+  <input type="text" size="1" name="guess" autocomplete="off" autofocus="true"/>
   <input type="submit" value="Guess!"/>
 </form>
 
