@@ -8,11 +8,11 @@ class HangpersonApp < Sinatra::Base
   register Sinatra::Flash
 
   before do
-    # code that is called before EVERY HTTP request
+    @game = session[:game] || HangpersonGame.new('')
   end
 
   after do
-    # code that is called after EVERY HTTP request
+    session[:game] = @game
   end
 
   get '/' do
@@ -21,7 +21,6 @@ class HangpersonApp < Sinatra::Base
 
   get '/new' do
     erb :new
-    
   end
 
   post '/create' do
@@ -30,9 +29,13 @@ class HangpersonApp < Sinatra::Base
     # Don't change the above line: it's necessary for autograder to work properly.
 
     # Your additional code goes here:
-
+    @game = HangpersonGame.new(word)
+    redirect '/show'
   end
 
+  # Use existing methods in HangpersonGame to process a guess.
+  # If a guess is repeated, set flash[:message] to "You have already used that letter."
+  # If a guess is invalid, set flash[:message] to "Invalid guess."
   post '/guess' do
     # get the guessed letter from params[:guess] (note: if user left it blank,
     #   params[:guess] will be nil)
