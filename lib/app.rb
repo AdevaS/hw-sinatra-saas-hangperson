@@ -21,6 +21,7 @@ class HangpersonApp < Sinatra::Base
 
   get '/new' do
     erb :new
+    
   end
 
   post '/create' do
@@ -29,7 +30,7 @@ class HangpersonApp < Sinatra::Base
     # Don't change the above line: it's necessary for autograder to work properly.
 
     # Your additional code goes here:
-    
+
   end
 
   post '/guess' do
