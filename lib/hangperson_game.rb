@@ -30,18 +30,19 @@ class HangpersonGame
           return false
         else
           @wrong_guesses += letter
+          return true
         end
       end
     end
   end
 
   def word_with_guesses
-    check_win_or_lose
     @guesses.each_char do |i|
       while @temp_word.include?(i) && @hidden_word != @word
         char_index = @temp_word.index(i)
         @hidden_word[char_index] = i
         @temp_word[char_index] = '-'
+        check_win_or_lose
       end
     end
       return @hidden_word

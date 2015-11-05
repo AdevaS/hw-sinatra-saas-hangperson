@@ -9,16 +9,10 @@ class HangpersonApp < Sinatra::Base
 
   before do
     @game = session[:game] || HangpersonGame.new('')
-    @game.guesses = session[:guesses]
-    @game.wrong_guesses = session[:wrong_guesses]
-    @game.word = session[:word]
   end
 
   after do
     session[:game] = @game
-    session[:guesses] = @game.guesses
-    session[:wrong_guesses] = @game.wrong_guesses
-    session[:word] = @game.word
   end
 
   get '/' do
@@ -51,7 +45,11 @@ class HangpersonApp < Sinatra::Base
     # Try guessing the letter.  If it has already been guessed,
     #   display "You have already used that letter."
     if @guesses.include?(letter)
-      flash[:notice] = "You have already used that letter."
+      flash[:message] = "You have already used that letter."
+      #redirect '/show'
+    elsif letter.is_a? NilClass
+      flash[:message] = "Invalid guess."
+      redirect '/show'
     else
       @game.guess(letter)
     end
@@ -63,9 +61,9 @@ class HangpersonApp < Sinatra::Base
   get '/show' do
 
     @game.check_win_or_lose
-    if @status = :win
+    if @status == :win
       redirect '/win'
-    elsif @status = :lose
+    elsif @status == :lose
       redirect '/lose'
     else
       redirect '/show'
@@ -80,7 +78,7 @@ class HangpersonApp < Sinatra::Base
   get '/win' do
     # Player wins. WARNING: prevent cheating by making sure the game has really been won!
     #  If player tries to cheat, they should be shown the main game view instead.  (And
-    #  you can optionally supply a "No cheating!" messaage.)
+    #  you can optionally supply a "No cheating!" message.)
     # If they really did win, show the 'win' view template.
     if @game.check_win_or_lose == :win
       erb :win
