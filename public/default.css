@@ -31,6 +31,10 @@ span.error {
   color: red;
 }
 
+span.hidden {
+	visibility: hidden;
+}
+
 span.win {
         color: green;
         font-weight: bold;

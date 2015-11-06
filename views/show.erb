@@ -4,11 +4,15 @@
   <p>
     <span class="error"><%= flash[:message] %></span>
   </p>
+<% else %>
+  <p>
+    <span class="hidden">hidden</span>
+  </p>
 <% end %>
 
 <p>
-  Word:
-  <span class="guesses"><%= @game.word %></span>
+  Moves Left:
+  <span class="guesses"><%= 7 - (@game.wrong_guesses.size % 7) %></span>
 </p>
 
 <p>
