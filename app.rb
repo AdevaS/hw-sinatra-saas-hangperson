@@ -49,7 +49,7 @@ class HangpersonApp < Sinatra::Base
     #@game.guess(letter)
     # Try guessing the letter.  If it has already been guessed,
     #   display "You have already used that letter."
-    if letter.nil?
+    if letter.nil? || /[^A-Za-z0-9]/.match(letter)
       flash[:message] = "Invalid guess."
       redirect '/show'
     elsif @game.guesses.include?(letter) || @game.wrong_guesses.include?(letter)

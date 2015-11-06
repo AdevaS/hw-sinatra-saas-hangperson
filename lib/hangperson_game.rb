@@ -7,7 +7,7 @@ class HangpersonGame
     @guesses = ''
     @wrong_guesses = ''
     @hidden_word = '-' * word.size
-    #@temp_word = word
+    @temp_word = word.dup
     @status = :play
   end
 
@@ -22,14 +22,14 @@ class HangpersonGame
         if guesses.include?(letter)      # does not change guess list if the letter is repeated
           return false               # and return false for @valid
         else
-          @guesses += letter            # add the letter guessed to the guess list
+          guesses << letter            # add the letter guessed to the guess list
           word_with_guesses   # change the character '-' inside the variable hidden_word for the equivalent letter
         end
       else
         if wrong_guesses.include?(letter)
           return false
         else
-          @wrong_guesses += letter
+          wrong_guesses << letter
           return true
         end
       end
@@ -37,22 +37,20 @@ class HangpersonGame
   end
 
   def word_with_guesses
-    temp_word = word
     guesses.each_char do |i|
-      while temp_word.include?(i) && hidden_word != word
+      while temp_word.include?(i)
         char_index = temp_word.index(i)
         hidden_word[char_index] = i
         temp_word[char_index] = '-'
       end
     end
-      word = temp_word
       return hidden_word
   end
 
   def check_win_or_lose
-    if guesses.size == word.size
+    if hidden_word == word
       return :win
-    elsif wrong_guesses.size >= 6
+    elsif wrong_guesses.size > 6
       return :lose
     else
       return :play
