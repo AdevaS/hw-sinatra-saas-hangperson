@@ -7,26 +7,26 @@ class HangpersonGame
     @guesses = ''
     @wrong_guesses = ''
     @hidden_word = '-' * word.size
-    @temp_word = word
-    @status = ''
+    #@temp_word = word
+    @status = :play
   end
 
   def guess(letter)
     letter.downcase! if /([A-Z])/.match(letter)
     if /[^A-Za-z0-9]/.match(letter) || letter.nil? || letter.empty?
       raise ArgumentError.new("You must inform a letter")
-    elsif @guesses.include?(letter)
+    elsif guesses.include?(letter)
       return false
     else
-      if @word.include?(letter)
-        if @guesses.include?(letter)      # does not change guess list if the letter is repeated
+      if word.include?(letter)
+        if guesses.include?(letter)      # does not change guess list if the letter is repeated
           return false               # and return false for @valid
         else
           @guesses += letter            # add the letter guessed to the guess list
           word_with_guesses   # change the character '-' inside the variable hidden_word for the equivalent letter
         end
       else
-        if @wrong_guesses.include?(letter)
+        if wrong_guesses.include?(letter)
           return false
         else
           @wrong_guesses += letter
@@ -37,26 +37,26 @@ class HangpersonGame
   end
 
   def word_with_guesses
-    @guesses.each_char do |i|
-      while @temp_word.include?(i) && @hidden_word != @word
-        char_index = @temp_word.index(i)
-        @hidden_word[char_index] = i
-        @temp_word[char_index] = '-'
-        check_win_or_lose
+    temp_word = word
+    guesses.each_char do |i|
+      while temp_word.include?(i) && hidden_word != word
+        char_index = temp_word.index(i)
+        hidden_word[char_index] = i
+        temp_word[char_index] = '-'
       end
     end
-      return @hidden_word
+      word = temp_word
+      return hidden_word
   end
 
   def check_win_or_lose
-    if @guesses.size == @word.size
-      @status = :win
-    elsif @wrong_guesses.size >= 6
-      @status = :lose
+    if guesses.size == word.size
+      return :win
+    elsif wrong_guesses.size >= 6
+      return :lose
     else
-      @status = :play
+      return :play
     end
-    return @status
   end
 
 
